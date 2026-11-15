@@ -35,7 +35,9 @@ async function run(name, w, h, hash) {
   await page.bringToFront();
   await sleep(4000);
   for (const v of ['now', 'map', 'infra', 'action', 'settings']) {
-    await page.click(`#tabs button[data-go="${v}"]`);
+    // page.click は、スマホ幅で画面を切りかえた後に内部の待ちで固まることがある。位置を測って押す
+    const pt = await page.$eval(`#tabs button[data-go="${v}"]`, (b) => { const r = b.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; });
+    await page.mouse.click(pt[0], pt[1]);
     await sleep(v === 'map' || v === 'now' ? 3500 : 500);
     await page.screenshot({ path: join(out, `${name}_${v}.png`), fullPage: w < 1000 });
     const m = await page.evaluate(() => {
@@ -49,14 +51,18 @@ async function run(name, w, h, hash) {
       return { scrollX: document.documentElement.scrollWidth > vw, viewScrolls: view.scrollHeight > view.clientHeight + 1, pageScrolls: document.documentElement.scrollHeight > vh + 1, small, wide, minFont, band: document.getElementById('bandTitle').textContent, net: document.getElementById('netText').textContent };
     });
     report.push({ name, view: v, ...m });
+    console.log(JSON.stringify({ name, view: v, ...m }));
   }
   report.push({ name, errors, failed: [...new Set(failed)].slice(0, 10) });
+  console.log(JSON.stringify(report[report.length - 1]));
   await page.close();
 }
 await run('hub', 1920, 1080, '');
 await run('hub-drill', 1920, 1080, '#drill');
 await run('phone', 390, 844, '');
+await run('hub-zh', 1920, 1080, '?lang=zh#drill');
+await run('hub-en', 1920, 1080, '?lang=en#drill');
+await run('phone-en', 390, 844, '?lang=en');
 writeFileSync(join(out, 'report.json'), JSON.stringify(report, null, 2));
-for (const r of report) console.log(JSON.stringify(r));
 try { await browser.close(); } catch {}
 setTimeout(() => { try { rmSync(profile, { recursive: true, force: true }); } catch {} process.exit(0); }, 800);

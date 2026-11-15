@@ -43,6 +43,31 @@ ok('切れても前の情報は残す', (await txt('#bandTitle')).includes('大�
 ok('インターネット欄が「つながらない」', (await txt('#infraMini li:nth-child(3)')).includes('つながらない'));
 await page.setOfflineMode(false); await page.evaluate(() => dispatchEvent(new Event('online'))); await sleep(6000);
 ok('戻ったら更新の表示に戻る', /に更新/.test(await txt('#netText')), await txt('#netText'));
+// 言葉の切りかえ
+await page.click('#langs button[data-lang="zh"]'); await sleep(300);
+ok('繁體中文に切りかわる', (await txt('#bandTitle')).includes('沒有發布') && (await txt('#tabs button[data-go="infra"]')).includes('維生管線'), await txt('#bandTitle'));
+await page.click('#langs button[data-lang="en"]'); await sleep(300);
+ok('English に切りかわる', /No warnings|Advisory|Warning/.test(await txt('#bandTitle')) && (await txt('#tabs button[data-go="map"]')).includes('Map'), await txt('#bandTitle'));
+const leftover = await page.evaluate(() => [...document.querySelectorAll('body *')].filter((e) => !e.closest('[data-view="settings"], #map, #langs, script, #contacts, #siteName, #meetPlace, #qrList .by, #shareName') && e.offsetParent !== null).flatMap((e) => [...e.childNodes].filter((n) => n.nodeType === 3 && /[ぁ-んァ-ヶ]/.test(n.textContent)).map((n) => n.textContent.trim())).slice(0, 8));
+ok('English のとき、かな文字が残っていない', leftover.length === 0, leftover.join(' / '));
+await page.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
+ok('選んだ言葉が次回も続く', (await txt('#tabs button[data-go="map"]')).includes('Map'));
+await page.click('#langs button[data-lang="ja"]'); await sleep(300);
+ok('日本語にもどせる', (await txt('#tabs button[data-go="map"]')).includes('地図'));
+// スマホで見る → リンクを別の端末（別の保存領域）で開く
+await page.click('#shareBtn'); await sleep(300);
+ok('スマホ用のQRの窓が開く', await page.$eval('#share', (d) => d.open && document.getElementById('shareQr').width > 20));
+await page.click('#shareClose');
+await page.click('#tabs button[data-go="settings"]');
+const link = await page.$eval('#fLink', (e) => e.value);
+ok('設定にリンクが出る', link.includes('#s='), link.length + '文字');
+const ctx2 = await browser.createBrowserContext(); const p2 = await ctx2.newPage(); await p2.setViewport({ width: 390, height: 844 });
+await p2.goto(link, { waitUntil: 'networkidle2' }); await sleep(2500);
+ok('リンクを開いた端末に設定が入る', (await p2.$eval('#meetPlace', (e) => e.textContent)) === '第2駐車場' && !(await p2.evaluate(() => location.hash)));
+ok('リンクにライフラインの記録は入らない', !(await p2.$eval('#infraMini li:nth-child(1)', (e) => e.textContent)).includes('使えない'));
+await p2.goto(link.split('#')[0] + '#s=AAAA%%', { waitUntil: 'networkidle2' }); await sleep(1500);
+ok('こわれたリンクでも止まらない', (await p2.$eval('#bandTitle', (e) => e.textContent)).length > 5);
+await ctx2.close();
 // 細工した保存内容でも、文字として出るだけで動かない
 await page.evaluate(() => localStorage.setItem('bousai-board-v1', JSON.stringify({ name: '<img src=x onerror=alert(1)>', lat: 'x', muni: '../../x', infra: { power: { s: '<b>', t: 'a' } }, contacts: '<script>alert(1)</script>｜1' })));
 let dialog = false; page.on('dialog', async (d) => { dialog = true; await d.dismiss(); });

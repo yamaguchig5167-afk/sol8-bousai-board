@@ -17,6 +17,8 @@
     <strong id="siteName"></strong>
   </div>
   <div class="clock"><span id="date"></span><strong id="time"></strong></div>
+  <div class="langs" id="langs" role="group" aria-label="Language"></div>
+  <button type="button" class="share-btn" id="shareBtn"><span class="ico" data-ico="phone"></span>スマホで見る</button>
   <div class="net" id="net"><span class="dot"></span><span id="netText">情報を取りにいっています</span></div>
 </header>
 
@@ -164,6 +166,15 @@
           <span class="msg" id="fSaved"></span>
         </div>
       </div>
+      <div class="linkbox">
+        <h3>この事業所のリンク</h3>
+        <p>このリンクを開いた端末は、上の内容（名前・住所・集まる場所・連絡先）で始まります。別の MAXHUB やお客様への案内に使えます。保存してからコピーしてください。</p>
+        <div class="row">
+          <input id="fLink" type="text" readonly aria-label="この事業所のリンク">
+          <button type="button" class="btn" id="fCopy">コピーする</button>
+        </div>
+        <p class="msg" id="fCopied"></p>
+      </div>
       <div class="sources">
         <h3>情報の出どころ</h3>
         <p>警報・注意報、天気、観測、地震、雨雲、キキクル：気象庁ホームページ／地図：国土地理院（地理院タイル）／想定される被害：ハザードマップポータルサイト</p>
@@ -180,6 +191,14 @@
   <button type="button" data-go="action"><span class="ico" data-ico="run"></span>もしものとき</button>
   <button type="button" data-go="settings" class="tab-set"><span class="ico" data-ico="gear"></span>設定</button>
 </nav>
+
+<dialog id="share" aria-labelledby="shareTitle">
+  <h2 id="shareTitle">この画面をスマホで開く</h2>
+  <p class="share-name" id="shareName"></p>
+  <canvas id="shareQr" role="img" aria-label="QR"></canvas>
+  <p class="share-note">ライフラインの記録は、端末ごとに別です。</p>
+  <button type="button" class="btn primary" id="shareClose">閉じる</button>
+</dialog>
 
 <div id="map"></div>
 <script src="vendor/qrcode.js"></script>
