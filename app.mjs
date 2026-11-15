@@ -100,7 +100,8 @@ const KIND = {
   '23': ['低温', 2], '24': ['霜', 2], '25': ['着氷', 2], '26': ['着雪', 2],
 };
 const LEVELED = new Set(['33', '43', '03', '10', '39', '49', '09', '29', '38', '48', '08', '19']); // 「レベル」を付けて呼ぶ種類
-const kindName = (code) => warnName(KIND[code][0], G[KIND[code][1]]);
+// 英語でレベルの付く種類は、気象庁の英語表示と同じ「段階（種類）」の順にする
+const kindName = (code) => (getLang() === 'en' && LEVELED.has(code) ? `${T(G[KIND[code][1]])} (${T(KIND[code][0])})` : warnName(KIND[code][0], G[KIND[code][1]]));
 
 // ── 状態 ──
 const S = { area: null, warn: null, wx: null, obs: null, quakes: null, lastOk: 0, failed: false, rainTime: null, riskTime: null };

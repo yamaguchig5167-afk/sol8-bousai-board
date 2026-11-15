@@ -102,7 +102,7 @@ const E = {
   '情報を取りにいっています': 'Loading information', '警報・注意報を取りにいっています': 'Loading warnings',
   'レベル{n} ': 'Lv{n} ', 'レベル': 'Level', '注意': 'Alert', '{t} 発表': 'Issued {t}',
   '{n}に 特別警報が 出ています': 'Emergency Warning for {n}', '命を守る行動をとってください。': 'Take action to protect your life.',
-  '{n}に 危険警報が 出ています': 'Danger Warning for {n}',
+  '{n}に 危険警報が 出ています': 'Urgent Warning for {n}',
   '市町村の避難情報を確かめ、危ない場所から離れてください。': 'Check local evacuation info and leave dangerous places.',
   '{n}に 警報が 出ています': 'Warning for {n}', '市町村の避難情報を確かめてください。': 'Check local evacuation info.',
   '{n}に 注意報が 出ています': 'Advisory for {n}', 'これからの情報に気をつけてください。': 'Stay alert for further information.',
@@ -136,9 +136,10 @@ const E = {
   '重ねる情報を選んでください': 'Choose a layer',
   '通信できません（{t} の情報を表示中）': 'Offline (showing data from {t})', '通信できません。情報を表示できません': 'Offline. No data to show',
   '{t} に更新': 'Updated {t}', 'この端末では地図を表示できません。': 'The map is not available on this device.',
-  '大雨': 'Heavy Rain', '土砂災害': 'Landslide', '高潮': 'Storm Surge', '暴風': 'Storm', '強風': 'Gale', '暴風雪': 'Blizzard', '風雪': 'Snow-storm', '大雪': 'Heavy Snow',
-  '波浪': 'High Waves', '雷': 'Thunderstorm', '融雪': 'Snow-melt', '濃霧': 'Dense Fog', '乾燥': 'Dry Air', 'なだれ': 'Avalanche', '低温': 'Low Temperature', '霜': 'Frost', '着氷': 'Icing', '着雪': 'Snow Accretion',
-  '特別警報': 'Emergency Warning', '危険警報': 'Danger Warning', '警報': 'Warning', '注意報': 'Advisory',
+  '大雨': 'Heavy Rain', '土砂災害': 'Landslide', '高潮': 'Storm Surge', '暴風': 'Storm', '強風': 'Gale', '暴風雪': 'Snowstorm', '風雪': 'Gale and Snow', '大雪': 'Heavy Snow',
+  '波浪': 'High Wave', '雷': 'Thunder Storm', '融雪': 'Snow Melting', '濃霧': 'Dense Fog', '乾燥': 'Dry Air', 'なだれ': 'Avalanche', '低温': 'Low Temperature', '霜': 'Frost', '着氷': 'Ice Accretion', '着雪': 'Snow Accretion',
+  // 警報の英語名は気象庁ホームページ（警報・注意報の英語表示）の表記に合わせた（2026-11-15 確認）
+  '特別警報': 'Emergency Warning', '危険警報': 'Urgent Warning', '警報': 'Warning', '注意報': 'Advisory',
 };
 export const DICT = { zh: Z, en: E };
 export const LANGS = [['ja', '日本語'], ['zh', '繁體中文'], ['en', 'English']];
