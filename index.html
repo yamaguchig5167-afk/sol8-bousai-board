@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>防災ボード</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="drill" hidden>訓練の表示です（実際の情報ではありません）</div>
+
+<header class="top">
+  <div class="site">
+    <span class="site-label">防災ボード</span>
+    <strong id="siteName"></strong>
+  </div>
+  <div class="clock"><span id="date"></span><strong id="time"></strong></div>
+  <div class="net" id="net"><span class="dot"></span><span id="netText">情報を取りにいっています</span></div>
+</header>
+
+<section class="band lv0" id="band" aria-live="polite">
+  <div class="band-mark" id="bandMark" aria-hidden="true"></div>
+  <div class="band-body">
+    <p class="band-title" id="bandTitle">情報を取りにいっています</p>
+    <p class="band-sub" id="bandSub"></p>
+  </div>
+  <ul class="band-chips" id="bandChips"></ul>
+  <button type="button" class="band-btn" id="bandBtn" hidden>もしものときの行動を見る</button>
+</section>
+
+<main>
+  <!-- いま -->
+  <section class="view" data-view="now">
+    <div class="col col-weather">
+      <article class="card">
+        <h2>天気 <small id="wxArea"></small></h2>
+        <div class="wx-days" id="wxDays"></div>
+        <div class="pops" id="pops"></div>
+      </article>
+      <article class="card">
+        <h2>いまの観測 <small id="obsWhere"></small></h2>
+        <div class="obs" id="obs"></div>
+      </article>
+    </div>
+    <div class="col col-map">
+      <article class="card card-map">
+        <h2>雨雲のようす <small id="rainTime"></small></h2>
+        <div class="mapslot" id="slotNow"></div>
+        <ul class="legend rain" id="lgRainNow"></ul>
+      </article>
+    </div>
+    <div class="col col-side">
+      <article class="card">
+        <h2>最近の地震 <small id="qkScope"></small></h2>
+        <ul class="quakes" id="quakes"></ul>
+      </article>
+      <article class="card">
+        <h2>社内のライフライン</h2>
+        <ul class="infra-mini" id="infraMini"></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- 地図 -->
+  <section class="view" data-view="map" hidden>
+    <div class="map-wrap">
+      <div class="map-main">
+        <div class="mapslot big" id="slotMap"></div>
+        <div class="legend-box"><h3>色の意味</h3><ul class="legend" id="lgMap"></ul></div>
+      </div>
+      <aside class="map-side">
+        <h2>地図に重ねる情報</h2>
+        <p class="hint">押すと、出したり消したりできます。</p>
+        <h3>いまの状況（気象庁）</h3>
+        <div class="layers" id="layersLive"></div>
+        <h3>想定される被害（ハザードマップ）</h3>
+        <div class="layers" id="layersHazard"></div>
+        <p class="note">色が付いていない場所も、災害が起きないという意味ではありません。くわしくは市町村のハザードマップを見てください。</p>
+        <button type="button" class="btn" id="toSite">事業所の位置にもどす</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ライフライン -->
+  <section class="view" data-view="infra" hidden>
+    <div class="infra-wrap">
+      <div class="infra-main">
+        <h2>社内のライフライン <small>確かめた人が、ここを押して知らせます</small></h2>
+        <ul class="infra-list" id="infraList"></ul>
+      </div>
+      <aside class="infra-side">
+        <h2>地域の状況を調べる <small>スマホで読み取ります</small></h2>
+        <ul class="qr-list" id="qrList"></ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 行動 -->
+  <section class="view" data-view="action" hidden>
+    <div class="action-wrap">
+      <div class="steps">
+        <article class="step s1">
+          <p class="step-time">すぐ〜1時間</p>
+          <h2>命を守る</h2>
+          <ol><li>身を守る。ゆれが止まるまで動かない</li><li>けが人がいないか声をかける</li><li>火の元・電気・ガスを確かめる</li><li>集まる場所へ移る</li><li>全員の無事を責任者へ知らせる</li></ol>
+        </article>
+        <article class="step s2">
+          <p class="step-time">1時間〜1日</p>
+          <h2>被害をつかむ</h2>
+          <ol><li>建物・設備・データの被害を確かめる</li><li>ライフラインをこの画面に記録する</li><li>お客様・取引先へ状況を知らせる</li><li>代わりの手段（電源・通信）を用意する</li></ol>
+        </article>
+        <article class="step s3">
+          <p class="step-time">1日〜3日</p>
+          <h2>仕事を立て直す</h2>
+          <ol><li>先に再開する仕事を決める</li><li>出社できる人・在宅の人を分ける</li><li>役場・保険会社へ連絡する</li><li>被害の写真を残す</li></ol>
+        </article>
+      </div>
+      <aside class="action-side">
+        <article class="card meet">
+          <h2>集まる場所</h2>
+          <p class="big" id="meetPlace"></p>
+        </article>
+        <article class="card">
+          <h2>連絡先</h2>
+          <ul class="contacts" id="contacts"></ul>
+        </article>
+        <article class="card dial">
+          <h2>家族と連絡がとれないとき</h2>
+          <p><strong>171</strong> 災害用伝言ダイヤル</p>
+        </article>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section class="view" data-view="settings" hidden>
+    <div class="settings">
+      <h2>設定</h2>
+      <div class="form">
+        <label for="fName">事業所の名前</label>
+        <input id="fName" type="text" maxlength="40" autocomplete="off">
+
+        <label for="fAddr">住所</label>
+        <div class="row">
+          <input id="fAddr" type="text" maxlength="80" autocomplete="off" placeholder="例）熊本県菊池郡大津町杉水">
+          <button type="button" class="btn" id="fFind">この住所で探す</button>
+        </div>
+        <p class="msg" id="fMsg"></p>
+
+        <label for="fMeet">集まる場所</label>
+        <input id="fMeet" type="text" maxlength="40" autocomplete="off">
+
+        <label for="fContacts">連絡先（1行に1件。「名前｜電話番号」）</label>
+        <textarea id="fContacts" rows="4" maxlength="400"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="fRotate"> さわらない間は、画面を順番に切りかえる</label>
+          <label><input type="checkbox" id="fDrill"> 訓練の表示にする（見本の警報と地震を出す）</label>
+        </div>
+        <div class="row">
+          <button type="button" class="btn primary" id="fSave">保存する</button>
+          <span class="msg" id="fSaved"></span>
+        </div>
+      </div>
+      <div class="sources">
+        <h3>情報の出どころ</h3>
+        <p>警報・注意報、天気、観測、地震、雨雲、キキクル：気象庁ホームページ／地図：国土地理院（地理院タイル）／想定される被害：ハザードマップポータルサイト</p>
+        <p>この画面は公式の情報を見やすく並べたものです。避難の判断は、市町村の避難情報と、その場の状況で行ってください。河川ごとの氾濫の情報は、この画面には出ません。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" id="tabs">
+  <button type="button" data-go="now" aria-current="true"><span class="ico" data-ico="home"></span>いま</button>
+  <button type="button" data-go="map"><span class="ico" data-ico="map"></span>地図</button>
+  <button type="button" data-go="infra"><span class="ico" data-ico="plug"></span>ライフライン</button>
+  <button type="button" data-go="action"><span class="ico" data-ico="run"></span>もしものとき</button>
+  <button type="button" data-go="settings" class="tab-set"><span class="ico" data-ico="gear"></span>設定</button>
+</nav>
+
+<div id="map"></div>
+<script src="vendor/qrcode.js"></script>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>
