@@ -43,7 +43,7 @@ PORT=3761 node serve.mjs ／ BOARD_URL=http://localhost:3761/ node check.mjs   �
 - 津波・台風の進路
 - 天気の文と地名の翻訳（繁體中文・English では天気を「晴・陰・雨・雪」の区分だけで出す。警報の英語名は気象庁ホームページの英語表示に合わせた。繁體中文の言い回しは公式の訳が無く、台湾の方の確認がまだ）
 - 複数の端末でのライフライン記録の共有（いまは MAXHUB 1台の中だけ）
-- MAXHUB 実機での確認、公開（どこにも公開していない）
+- MAXHUB 実機での確認（公開先は https://yamaguchig5167-afk.github.io/sol8-bousai-board/ ）
 
 ## 部品
 

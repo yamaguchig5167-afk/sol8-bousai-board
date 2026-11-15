@@ -219,8 +219,9 @@ function renderBand() {
     else if (top === 3) { cls = 'lv3'; title = T('{n}に 警報が 出ています', { n }); sub = T('市町村の避難情報を確かめてください。') + when; act = true; }
     else if (top === 2) { cls = 'lv2'; title = T('{n}に 注意報が 出ています', { n }); sub = T('これからの情報に気をつけてください。') + when; }
     else { title = T('いま {n}に 警報・注意報は 出ていません', { n }); sub = T('気象庁の発表をもとに表示しています'); }
-    const leveled = top >= 3 || w.active.some((a) => LEVELED.has(a.code) && a.lv === top);
-    if (top >= 2) mark.append(el('span', '', T(leveled ? 'レベル' : '注意')), el('b', '', leveled ? String(top) : '！'));
+    // 「レベル」と呼ぶのは大雨・土砂災害・高潮だけ。暴風や大雪などは段階の名前で出す
+    const leveled = w.active.some((a) => LEVELED.has(a.code) && a.lv === top);
+    if (top >= 2) mark.append(el('span', '', T(leveled ? 'レベル' : top >= 5 ? '特別' : top >= 3 ? '警報' : '注意')), el('b', '', leveled ? String(top) : '！'));
     else mark.append(el('b', '', '—'));
   }
   if (q && (cls === 'lv0' || cls === 'lv2')) {

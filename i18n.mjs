@@ -100,7 +100,7 @@ const E = {
   'スマホで見る': 'View on phone', 'この画面をスマホで開く': 'Open this board on your phone',
   'ライフラインの記録は、端末ごとに別です。': 'Utility records are kept separately on each device.', '閉じる': 'Close',
   '情報を取りにいっています': 'Loading information', '警報・注意報を取りにいっています': 'Loading warnings',
-  'レベル{n} ': 'Lv{n} ', 'レベル': 'Level', '注意': 'Alert', '{t} 発表': 'Issued {t}',
+  'レベル{n} ': 'Lv{n} ', 'レベル': 'Level', '注意': 'Alert', '特別': 'Emerg.', '{t} 発表': 'Issued {t}',
   '{n}に 特別警報が 出ています': 'Emergency Warning for {n}', '命を守る行動をとってください。': 'Take action to protect your life.',
   '{n}に 危険警報が 出ています': 'Urgent Warning for {n}',
   '市町村の避難情報を確かめ、危ない場所から離れてください。': 'Check local evacuation info and leave dangerous places.',
