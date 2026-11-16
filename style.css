@@ -14,7 +14,7 @@
 }
 * { box-sizing: border-box; }
 html { font-size: 16px; }
-@media (min-width: 1000px) { html { font-size: calc(100vw / 120); } }
+@media (min-width: 1000px) { html { font-size: min(calc(100vw / 120), calc(100vh / 67.5)); } }
 body {
   margin: 0; color: var(--ink); background: var(--bg);
   font-family: "BIZ UDPGothic", "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -51,6 +51,9 @@ small { font-weight: 400; color: var(--ink2); font-size: .75em; margin-left: .5e
 .langs button[aria-pressed="true"] { background: #fff; color: var(--navy); font-weight: 700; }
 .share-btn { display: flex; align-items: center; gap: .4rem; min-height: 2.75rem; padding: .2rem .9rem; border-radius: .4rem; border: 1px solid rgba(255,255,255,.55); background: transparent; color: #fff; font-size: 1rem; white-space: nowrap; }
 .share-btn svg { width: 1.3rem; height: 1.3rem; display: block; }
+.share-btn[hidden] { display: none; }
+/* 全画面のとき：ブラウザの背景が見えないようにする */
+:fullscreen, ::backdrop { background: var(--bg); }
 dialog#share { border: 0; border-radius: 1rem; padding: 1.6rem 2rem; text-align: center; color: var(--ink); max-width: min(92vw, 36rem); }
 dialog#share::backdrop { background: rgba(20,38,63,.6); }
 dialog#share h2 { font-size: 1.6rem; }

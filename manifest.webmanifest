@@ -1,0 +1,19 @@
+{
+  "name": "防災ボード",
+  "short_name": "防災ボード",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#E9EDF2",
+  "theme_color": "#17365D",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

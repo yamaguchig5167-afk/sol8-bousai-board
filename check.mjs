@@ -63,6 +63,8 @@ await run('phone', 390, 844, '');
 await run('hub-zh', 1920, 1080, '?lang=zh#drill');
 await run('hub-en', 1920, 1080, '?lang=en#drill');
 await run('phone-en', 390, 844, '?lang=en');
+// 画面の大きさと縦横比のちがい（4K・ノートPC・16:10・横長・縦が低い）
+for (const [w, h] of [[3840, 2160], [1366, 768], [1280, 800], [1920, 1200], [2560, 1080], [1280, 720]]) await run(`size-${w}x${h}`, w, h, '#drill');
 writeFileSync(join(out, 'report.json'), JSON.stringify(report, null, 2));
 try { await browser.close(); } catch {}
 setTimeout(() => { try { rmSync(profile, { recursive: true, force: true }); } catch {} process.exit(0); }, 800);

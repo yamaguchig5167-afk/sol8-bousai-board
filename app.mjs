@@ -311,6 +311,7 @@ const ICON = {
   plug: '<path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/>', run: '<circle cx="14" cy="4" r="2"/><path d="M6 22l4-7-2-4 4-3 3 4h4M10 11l-4 1-1 4M13 15l3 3v4"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
   phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  full: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', exit: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
 };
 const svg = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name]}</svg>`;
 const INFRA = [
@@ -535,7 +536,7 @@ function renderAll() {
   document.title = T('防災ボード');
   legendList($('lgRainNow'), RAIN_LG.map(([c, t]) => [c, null, t]));
   renderLayerButtons(); renderMapLegend(); renderLinks(); renderAction();
-  renderBand(); renderWx(); renderObs(); renderQuakes(); renderInfra(); renderNet(); renderRainTime();
+  renderBand(); renderWx(); renderObs(); renderQuakes(); renderInfra(); renderNet(); renderRainTime(); renderFs();
   tick();
   document.querySelectorAll('#langs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === getLang())));
 }
@@ -544,6 +545,27 @@ for (const [code, label] of LANGS) {
   b.addEventListener('click', () => { cfg.lang = code; setLangCode(code); saveCfg(); renderAll(); });
   $('langs').append(b);
 }
+
+// ── 全画面（ブラウザの枠を消して、画面いっぱいに映す）──
+const fsOn = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+const fsCan = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+function renderFs() {
+  const b = $('fsBtn'); b.hidden = !fsCan;
+  b.firstElementChild.innerHTML = svg(fsOn() ? 'exit' : 'full');
+  $('fsText').textContent = T(fsOn() ? '全画面をやめる' : '全画面');
+  b.setAttribute('aria-pressed', String(fsOn()));
+}
+async function toggleFs() {
+  const d = document, e = d.documentElement;
+  try {
+    if (fsOn()) await (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else await (e.requestFullscreen || e.webkitRequestFullscreen).call(e, { navigationUI: 'hide' });
+  } catch { /* 端末が断ったときは、そのままの表示で続ける */ }
+  renderFs();
+}
+$('fsBtn').addEventListener('click', toggleFs);
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(ev, () => { renderFs(); if (map) setTimeout(() => map.resize(), 100); });
+addEventListener('resize', () => { if (map) map.resize(); });
 
 // ── スマホで見る（この事業所の設定を入れたリンクのQR）──
 $('shareBtn').addEventListener('click', () => {

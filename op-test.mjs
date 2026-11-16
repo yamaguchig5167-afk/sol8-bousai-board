@@ -54,6 +54,13 @@ await page.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
 ok('選んだ言葉が次回も続く', (await txt('#tabs button[data-go="map"]')).includes('Map'));
 await page.click('#langs button[data-lang="ja"]'); await sleep(300);
 ok('日本語にもどせる', (await txt('#tabs button[data-go="map"]')).includes('地図'));
+// 全画面
+ok('全画面のボタンが出る', await page.$eval('#fsBtn', (b) => !b.hidden && b.textContent.includes('全画面')));
+await page.click('#fsBtn'); await sleep(800);
+const fsIn = await page.evaluate(() => !!document.fullscreenElement);
+ok('押すと全画面になり、ボタンが「やめる」に変わる', fsIn && (await txt('#fsBtn')).includes('やめる'), 'fullscreen=' + fsIn);
+await page.click('#fsBtn'); await sleep(800);
+ok('もう一度押すと元にもどる', await page.evaluate(() => !document.fullscreenElement) && !(await txt('#fsBtn')).includes('やめる'));
 // スマホで見る → リンクを別の端末（別の保存領域）で開く
 await page.click('#shareBtn'); await sleep(300);
 ok('スマホ用のQRの窓が開く', await page.$eval('#share', (d) => d.open && document.getElementById('shareQr').width > 20));
