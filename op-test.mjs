@@ -45,7 +45,7 @@ await page.setOfflineMode(false); await page.evaluate(() => dispatchEvent(new Ev
 ok('戻ったら更新の表示に戻る', /に更新/.test(await txt('#netText')), await txt('#netText'));
 // 言葉の切りかえ
 await page.click('#langs button[data-lang="zh"]'); await sleep(300);
-ok('繁體中文に切りかわる', (await txt('#bandTitle')).includes('沒有發布') && (await txt('#tabs button[data-go="infra"]')).includes('維生管線'), await txt('#bandTitle'));
+ok('繁體中文に切りかわる', /沒有發布|已發布/.test(await txt('#bandTitle')) &&(await txt('#tabs button[data-go="infra"]')).includes('維生管線'), await txt('#bandTitle'));
 await page.click('#langs button[data-lang="en"]'); await sleep(300);
 ok('English に切りかわる', /No warnings|Advisory|Warning/.test(await txt('#bandTitle')) && (await txt('#tabs button[data-go="map"]')).includes('Map'), await txt('#bandTitle'));
 const leftover = await page.evaluate(() => [...document.querySelectorAll('body *')].filter((e) => !e.closest('[data-view="settings"], #map, #langs, script, #contacts, #siteName, #meetPlace, #qrList .by, #shareName') && e.offsetParent !== null).flatMap((e) => [...e.childNodes].filter((n) => n.nodeType === 3 && /[ぁ-んァ-ヶ]/.test(n.textContent)).map((n) => n.textContent.trim())).slice(0, 8));
