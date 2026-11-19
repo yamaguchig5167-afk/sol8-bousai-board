@@ -5,3 +5,5 @@ r8.json
 w.html
 _taihi_*/
 annai/
+.vercel
+.env*
